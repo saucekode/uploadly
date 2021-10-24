@@ -4,6 +4,7 @@ import com.google.api.client.auth.oauth2.Credential;
 import com.google.auth.oauth2.GoogleCredentials;
 import com.google.cloud.storage.Storage;
 import com.google.cloud.storage.StorageOptions;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpStatus;
 
@@ -14,7 +15,8 @@ import java.io.IOException;
 @Configuration
 public class GcpConfig {
 
-    public Storage storage() throws IOException {
+    @Bean
+    public Storage objectStorage() throws IOException {
 
         GoogleCredentials gcpCredentials = GoogleCredentials.fromStream(new FileInputStream("/home/saucekode/Downloads/uploadly-329921-cb620115901d.json"));
 

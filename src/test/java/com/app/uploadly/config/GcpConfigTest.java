@@ -22,7 +22,7 @@ class GcpConfigTest {
         GcpConfig gcpConfig = new GcpConfig();
         ServiceAccount serviceAccountName = null;
         try{
-            serviceAccountName = gcpConfig.storage().getServiceAccount("uploadly-329921");
+            serviceAccountName = gcpConfig.objectStorage().getServiceAccount("uploadly-329921");
             log.info(serviceAccountName.getEmail());
         }catch(IOException e){
             log.info("Ioexception here is ----> {}", e.getMessage());
