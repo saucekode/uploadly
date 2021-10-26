@@ -1,6 +1,7 @@
 package com.app.uploadly.service;
 
 import com.app.uploadly.config.GcpConfig;
+import com.app.uploadly.exceptions.FileIsEmptyException;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -26,7 +27,7 @@ class FileStorageServiceImplTest {
 
     @Test
     @DisplayName("Test that image can be uploaded")
-    void uploadMultipartImage() throws IOException {
+    void uploadMultipartImage() throws IOException, FileIsEmptyException {
 //        fileStorageService.uploadedFile();
         Path filePath = Paths.get("/home/saucekode/Pictures/definitions.png");
         MultipartFile multipartFile = new MockMultipartFile("definitions", "definitions.png", "img/png", Files.readAllBytes(filePath));
