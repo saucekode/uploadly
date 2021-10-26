@@ -1,6 +1,7 @@
 package com.app.uploadly.uploadlyImage;
 
 import com.app.uploadly.exceptions.FileIsEmptyException;
+import com.app.uploadly.exceptions.UploadFailureException;
 import com.app.uploadly.service.FileStorageService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -29,6 +30,8 @@ public class UploadlyController {
             storageService.uploadFile(file);
         }catch(FileIsEmptyException ex){
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No file was uploaded. Upload file!" ,ex);
+        }catch(UploadFailureException ex){
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid file type", ex);
         }
         return ResponseEntity.ok(file.getOriginalFilename() + " was uploaded successfully!");
     }

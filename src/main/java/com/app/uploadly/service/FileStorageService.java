@@ -1,6 +1,7 @@
 package com.app.uploadly.service;
 
 import com.app.uploadly.exceptions.FileIsEmptyException;
+import com.app.uploadly.exceptions.UploadFailureException;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -10,6 +11,6 @@ public interface FileStorageService {
 
     void uploadImageToCloudStorage(String bucketName, String objectName, String filePath);
 
-    MultipartFile uploadFile(MultipartFile file) throws FileIsEmptyException;
+    MultipartFile uploadFile(MultipartFile file) throws FileIsEmptyException, UploadFailureException;
 
 }
