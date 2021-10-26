@@ -6,8 +6,13 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.mock.web.MockMultipartFile;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
@@ -19,19 +24,18 @@ class FileStorageServiceImplTest {
     @Autowired
     FileStorageService fileStorageService;
 
-    @Autowired
-    GcpConfig gcpCloudStorage;
-
     @Test
-    @DisplayName("Test that image was uploaded to gcp bucket")
-    void uploadImageToBucket(){
-        fileStorageService.uploadImage("uploadly-store", "app-uploadly",  "/home/saucekode/Downloads/gcptest.png");
-//        try{
-////            assertThat(gcpCloudStorage.objectStorage().get().size()).isEqualTo(1);
-////            log.info(String.valueOf(gcpCloudStorage.objectStorage().list));
-//        }catch(IOException e){
-//            log.info(e.getMessage());
-//        }
+    @DisplayName("Test that image can be uploaded")
+    void uploadMultipartImage() throws IOException {
+//        fileStorageService.uploadedFile();
+        Path filePath = Paths.get("/home/saucekode/Pictures/definitions.png");
+        MultipartFile multipartFile = new MockMultipartFile("definitions", "definitions.png", "img/png", Files.readAllBytes(filePath));
+
+        log.info("Multipart --> {}", multipartFile);
+
+        assertThat(multipartFile).isNotNull();
+
+        fileStorageService.uploadFile(multipartFile);
 
     }
 }

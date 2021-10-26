@@ -1,10 +1,12 @@
 package com.app.uploadly.service;
 
 import com.app.uploadly.config.GcpConfig;
+import com.app.uploadly.exceptions.FileIsEmptyException;
 import com.google.cloud.storage.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.IOException;
@@ -22,7 +24,7 @@ public class FileStorageServiceImpl implements FileStorageService {
     private GcpConfig gcpCloudStorage;
 
     @Override
-    public void uploadImage(String bucketName, String objectName, String filePath) {
+    public void uploadImageToCloudStorage(String bucketName, String objectName, String filePath) {
         try{
             Storage storage = gcpCloudStorage.objectStorage();
             BlobId blobId = BlobId.of(bucketName, objectName);
@@ -37,6 +39,14 @@ public class FileStorageServiceImpl implements FileStorageService {
         }catch(IOException ex){
             throw new IllegalStateException("Failed to upload image ", ex);
         }
+    }
+
+    @Override
+    public MultipartFile uploadFile(MultipartFile file) throws FileIsEmptyException {
+        if(file.isEmpty()){
+            throw new FileIsEmptyException("File is empty");
+        }
+        return file;
     }
 
 
