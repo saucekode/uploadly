@@ -32,7 +32,7 @@ public class FileStorageServiceImpl implements FileStorageService {
 
             Storage storage = objectStorage();
 
-            BlobId blobId = BlobId.of(bucketName, UUID.randomUUID() + fileToTransfer.getContentType());
+            BlobId blobId = BlobId.of(bucketName, UUID.randomUUID() + "." +fileToTransfer.getContentType());
 
             BlobInfo blobInfo = BlobInfo.newBuilder(blobId).build();
 
