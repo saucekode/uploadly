@@ -19,6 +19,7 @@ import static org.apache.http.entity.ContentType.*;
 @Slf4j
 @Service
 public class FileStorageServiceImpl implements FileStorageService {
+
     @Autowired
     private GcpConfig gcpCloudStorage;
 
