@@ -11,6 +11,8 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.io.IOException;
+
 @RestController
 @RequestMapping("/api/")
 @CrossOrigin(origins = "http://localhost:3000")
@@ -25,20 +27,16 @@ public class UploadlyController {
             produces = MediaType.APPLICATION_JSON_VALUE
     )
     @ResponseStatus(HttpStatus.ACCEPTED)
-    public ResponseEntity<?> uploadImage(@RequestParam("imageFile") MultipartFile file){
+    public ResponseEntity<?> uploadImageToCloudStorage(@RequestParam("imageFile") MultipartFile file){
         try{
-            storageService.uploadFile(file);
+            storageService.uploadImageToCloudStorage("uploadly-store", "app-uploadly", file);
         }catch(FileIsEmptyException ex){
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No file was uploaded. Upload file!" ,ex);
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No file was uploaded. Upload file!", ex);
         }catch(UploadFailureException ex){
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid file type", ex);
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "File must be an image!", ex);
         }
         return ResponseEntity.ok(file.getOriginalFilename() + " was uploaded successfully!");
     }
 
-    @GetMapping("viewImage")
-    public ResponseEntity<?> viewImage(){
-        return null;
-    }
 
 }

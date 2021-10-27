@@ -26,6 +26,12 @@ class FileStorageServiceImplTest {
     @Autowired
     FileStorageService fileStorageService;
 
+//    @Test
+//    @DisplayName("Test that image can be stored in cloud storage")
+//    void uploadImageToCloud(){
+//        fileStorageService.uploadImageToCloudStorage("uploadly-store", "app-uploadly", "/home/saucekode/Pictures/chimoneyreceipt.png");
+//    }
+
     @Test
     @DisplayName("Test that image can be uploaded")
     void uploadMultipartImage() throws IOException, FileIsEmptyException, UploadFailureException {
@@ -36,8 +42,6 @@ class FileStorageServiceImplTest {
         log.info("Multipart --> {}", multipartFile);
 
         assertThat(multipartFile).isNotNull();
-
-        fileStorageService.uploadFile(multipartFile);
 
     }
 }
