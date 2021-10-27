@@ -14,30 +14,33 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Arrays;
+import java.util.UUID;
+
+import static com.app.uploadly.config.GcpConfig.objectStorage;
 import static org.apache.http.entity.ContentType.*;
 
 @Slf4j
 @Service
 public class FileStorageServiceImpl implements FileStorageService {
 
-    @Autowired
-    private GcpConfig gcpCloudStorage;
 
     @Override
-    public void uploadImageToCloudStorage(String bucketName, MultipartFile fileToTransfer)
+    public String uploadImageToCloudStorage(String bucketName, MultipartFile fileToTransfer)
             throws UploadFailureException, FileIsEmptyException {
 
         try{
 
-            Storage storage = gcpCloudStorage.objectStorage();
+            Storage storage = objectStorage();
 
-            BlobId blobId = BlobId.of(bucketName, fileToTransfer.getName() + "." + fileToTransfer.getContentType());
+            BlobId blobId = BlobId.of(bucketName, String.valueOf(UUID.randomUUID()));
 
             BlobInfo blobInfo = BlobInfo.newBuilder(blobId).build();
 
-            storage.create(blobInfo, Files.readAllBytes(Paths.get(String.valueOf(convertMultipartToFile(fileToTransfer)))));
+            return "https://storage.googleapis.com/"+System.getenv("GCP_BUCKET")+"/"
+                    + storage.create(blobInfo, Files.readAllBytes(Paths.get(String.valueOf(convertMultipartToFile(fileToTransfer))))).getName();
 
-            log.info("File uploaded successfully to bucket --> {}", bucketName);
+//            log.info("File uploaded successfully to bucket --> {}", bucketName);
+
 
         }catch(IOException ex){
 
@@ -46,6 +49,8 @@ public class FileStorageServiceImpl implements FileStorageService {
             throw new IllegalStateException("Failed to upload image ", ex);
 
         }
+
+
     }
 
     private MultipartFile uploadFile(MultipartFile file) throws FileIsEmptyException, UploadFailureException {

@@ -28,14 +28,15 @@ public class UploadlyController {
     )
     @ResponseStatus(HttpStatus.ACCEPTED)
     public ResponseEntity<?> uploadImageToCloudStorage(@RequestParam("imageFile") MultipartFile file){
+        String gcpObjectLink = null;
         try{
-            storageService.uploadImageToCloudStorage("uploadly-store", file);
+            gcpObjectLink = storageService.uploadImageToCloudStorage(System.getenv("GCP_BUCKET"), file);
         }catch(FileIsEmptyException ex){
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No file was uploaded. Upload file!", ex);
         }catch(UploadFailureException ex){
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "File must be an image!", ex);
         }
-        return ResponseEntity.ok(file.getOriginalFilename() + " was uploaded successfully!");
+        return ResponseEntity.ok(gcpObjectLink);
     }
 
 

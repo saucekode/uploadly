@@ -11,6 +11,6 @@ import java.io.IOException;
 @Service
 public interface FileStorageService {
 
-    void uploadImageToCloudStorage(String bucketName, MultipartFile fileToTransfer) throws UploadFailureException, FileIsEmptyException;
+    String uploadImageToCloudStorage(String bucketName, MultipartFile fileToTransfer) throws UploadFailureException, FileIsEmptyException;
 
 }
