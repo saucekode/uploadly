@@ -16,7 +16,7 @@ import java.io.IOException;
 
 @RestController
 @RequestMapping("/api/")
-@CrossOrigin(origins = "http://localhost:3000")
+@CrossOrigin(origins = {"http://localhost:3000", "https://youthful-boyd-976ab9.netlify.app/"} )
 public class UploadlyController {
 
     @Autowired
