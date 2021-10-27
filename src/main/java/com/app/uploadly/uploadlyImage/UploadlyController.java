@@ -2,6 +2,7 @@ package com.app.uploadly.uploadlyImage;
 
 import com.app.uploadly.exceptions.FileIsEmptyException;
 import com.app.uploadly.exceptions.UploadFailureException;
+import com.app.uploadly.payload.ApiResponse;
 import com.app.uploadly.service.FileStorageService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -36,8 +37,7 @@ public class UploadlyController {
         }catch(UploadFailureException ex){
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "File must be an image!", ex);
         }
-        return ResponseEntity.ok(gcpObjectLink);
+        return ResponseEntity.ok(new ApiResponse(true, gcpObjectLink));
     }
-
 
 }
