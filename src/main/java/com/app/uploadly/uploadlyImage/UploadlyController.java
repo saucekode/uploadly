@@ -29,7 +29,7 @@ public class UploadlyController {
     @ResponseStatus(HttpStatus.ACCEPTED)
     public ResponseEntity<?> uploadImageToCloudStorage(@RequestParam("imageFile") MultipartFile file){
         try{
-            storageService.uploadImageToCloudStorage("uploadly-store", "app-uploadly", file);
+            storageService.uploadImageToCloudStorage("uploadly-store", file);
         }catch(FileIsEmptyException ex){
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No file was uploaded. Upload file!", ex);
         }catch(UploadFailureException ex){

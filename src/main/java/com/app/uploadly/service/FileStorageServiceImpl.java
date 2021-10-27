@@ -23,19 +23,18 @@ public class FileStorageServiceImpl implements FileStorageService {
     private GcpConfig gcpCloudStorage;
 
     @Override
-    public void uploadImageToCloudStorage(String bucketName, String objectName, MultipartFile fileToTransfer)
+    public void uploadImageToCloudStorage(String bucketName, MultipartFile fileToTransfer)
             throws UploadFailureException, FileIsEmptyException {
 
         try{
 
             Storage storage = gcpCloudStorage.objectStorage();
 
-            BlobId blobId = BlobId.of(bucketName, objectName);
+            BlobId blobId = BlobId.of(bucketName, fileToTransfer.getName() + "." + fileToTransfer.getContentType());
+
             BlobInfo blobInfo = BlobInfo.newBuilder(blobId).build();
 
-            storage.create(blobInfo, Files.readAllBytes(Paths.get(convertMultipartToFile(fileToTransfer).toString())));
-
-            Blob blob = storage.get(BlobId.of(bucketName, objectName));
+            storage.create(blobInfo, Files.readAllBytes(Paths.get(String.valueOf(convertMultipartToFile(fileToTransfer)))));
 
             log.info("File uploaded successfully to bucket --> {}", bucketName);
 
@@ -58,6 +57,10 @@ public class FileStorageServiceImpl implements FileStorageService {
         // restrict file type
         if(!String.valueOf(Arrays.asList(IMAGE_JPEG, IMAGE_PNG, IMAGE_SVG)).contains(file.getContentType())){
             throw new UploadFailureException("File must be an image!");
+        }
+
+        if(file.getSize() > 3_000_000){
+            throw new UploadFailureException("Maximum file size exceeded!!");
         }
 
         return file;
