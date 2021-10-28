@@ -36,8 +36,8 @@ public class FileStorageServiceImpl implements FileStorageService {
 
             BlobInfo blobInfo = BlobInfo.newBuilder(blobId).build();
 
-            return "https://storage.googleapis.com/"+System.getenv("GCP_BUCKET")+"/"
-                    + storage.create(blobInfo, Files.readAllBytes(Paths.get(String.valueOf(convertMultipartToFile(fileToTransfer))))).getName();
+
+            return generateGcpLink(storage, blobInfo, fileToTransfer);
 
 //            log.info("File uploaded successfully to bucket --> {}", bucketName);
 
@@ -94,6 +94,17 @@ public class FileStorageServiceImpl implements FileStorageService {
         if(file.isEmpty()){
             throw new FileIsEmptyException("File is empty");
         }
+    }
+
+    private String generateGcpLink(Storage storage, BlobInfo blobInfo, MultipartFile file) throws UploadFailureException, FileIsEmptyException, IOException {
+
+        StringBuilder gcpLink = new StringBuilder("https://storage.googleapis.com/");
+        gcpLink.append(System.getenv("GCP_BUCKET"));
+        gcpLink.append("/");
+        gcpLink.append(storage.create(blobInfo, Files.readAllBytes(Paths.get(String.valueOf(convertMultipartToFile(file))))).getName());
+
+        return String.valueOf(gcpLink);
+
     }
 
 }
