@@ -32,7 +32,7 @@ public class FileStorageServiceImpl implements FileStorageService {
 
             Storage storage = objectStorage();
 
-            BlobId blobId = BlobId.of(bucketName, String.valueOf(UUID.randomUUID()));
+            BlobId blobId = BlobId.of(bucketName, String.valueOf(UUID.randomUUID() + "." + fileToTransfer.getContentType().split("/")[0]));
 
             BlobInfo blobInfo = BlobInfo.newBuilder(blobId).build();
 
@@ -40,7 +40,6 @@ public class FileStorageServiceImpl implements FileStorageService {
                     + storage.create(blobInfo, Files.readAllBytes(Paths.get(String.valueOf(convertMultipartToFile(fileToTransfer))))).getName();
 
 //            log.info("File uploaded successfully to bucket --> {}", bucketName);
-
 
         }catch(IOException ex){
 
@@ -56,18 +55,11 @@ public class FileStorageServiceImpl implements FileStorageService {
     private MultipartFile uploadFile(MultipartFile file) throws FileIsEmptyException, UploadFailureException {
 
         // check if file is empty
-        if(file.isEmpty()){
-            throw new FileIsEmptyException("File is empty");
-        }
-
+        fileIsNotEmpty(file);
+        // validate file size
+        fileSizeValidation(file);
         // restrict file type
-        if(!String.valueOf(Arrays.asList(IMAGE_JPEG, IMAGE_PNG, IMAGE_SVG)).contains(file.getContentType())){
-            throw new UploadFailureException("File must be an image!");
-        }
-
-        if(file.getSize() > 3_000_000){
-            throw new UploadFailureException("Maximum file size exceeded!!");
-        }
+        fileTypeValidation(file);
 
         return file;
 
@@ -84,6 +76,24 @@ public class FileStorageServiceImpl implements FileStorageService {
 //        log.info(convertedFile.toString());
 
         return convertedFile;
+    }
+
+    private void fileTypeValidation(MultipartFile file) throws UploadFailureException {
+        if(!String.valueOf(Arrays.asList(IMAGE_JPEG, IMAGE_PNG, IMAGE_SVG)).contains(file.getContentType())){
+            throw new UploadFailureException("File must be an image!");
+        }
+    }
+
+    private void fileSizeValidation(MultipartFile file) throws UploadFailureException {
+        if(file.getSize() > 3_000_000){
+            throw new UploadFailureException("Maximum file size exceeded!!");
+        }
+    }
+
+    private void fileIsNotEmpty(MultipartFile file) throws FileIsEmptyException {
+        if(file.isEmpty()){
+            throw new FileIsEmptyException("File is empty");
+        }
     }
 
 }
